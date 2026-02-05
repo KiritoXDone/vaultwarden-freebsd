@@ -23,7 +23,7 @@ jobs:
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
         run: |
           . "$HOME/.cargo/env"
-          export LATEST_APP=$(curl -s https://api.github.com/repos/dani-garcia/vaultwarden/tags | grep -m1 '"name"' | cut -d'"' -f4)
+          export LATEST_APP=$(curl -s https://api.github.com/repos/dani-garcia/vaultwarden/tags | grep -m1 '"name"' | cut -d'"' -f4 | sed 's/^v//')
           git clone -b $LATEST_APP https://github.com/dani-garcia/vaultwarden
           cd vaultwarden
           cargo build --features sqlite --release
@@ -36,7 +36,7 @@ jobs:
 
     - name: Generate release tag
       id: tag
-      run: echo "release_tag=$(curl -s https://api.github.com/repos/dani-garcia/vaultwarden/tags | grep -m1 '"name"' | cut -d'"' -f4)" >> $GITHUB_OUTPUT
+      run: echo "release_tag=$(curl -s https://api.github.com/repos/dani-garcia/vaultwarden/tags | grep -m1 '"name"' | cut -d'"' -f4 | sed 's/^v//')" >> $GITHUB_OUTPUT
 
     - name: Create release
       uses: softprops/action-gh-release@v1
